@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
+
+body {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+/* HEADER */
+.header {
+    text-align: center;
+    padding: 30px;
+}
+
+/* CARDS */
+.container {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.card {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 20px;
+    width: 160px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.1);
+}
+
+/* GRAPH */
+.chart-box {
+    width: 400px;
+    margin: 40px auto;
+}
+
+/* PERCENT */
+.percent {
+    text-align: center;
+    font-size: 26px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>🎓 Welcome {{ name or "Student" }}</h1>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h3>Maths</h3>
+        <h2>{{ maths or 0 }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Science</h3>
+        <h2>{{ science or 0 }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>English</h3>
+        <h2>{{ english or 0 }}</h2>
+    </div>
+</div>
+
+<div class="chart-box">
+    <canvas id="chart"></canvas>
+</div>
+
+<div class="percent">
+    Percentage: {{ ((maths or 0) + (science or 0) + (english or 0)) / 3 | round(2) }}%
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const maths = {{ maths or 0 }};
+    const science = {{ science or 0 }};
+    const english = {{ english or 0 }};
+
+    const ctx = document.getElementById("chart");
+
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: ["Maths", "Science", "English"],
+            datasets: [{
+                label: "Marks",
+                data: [maths, science, english],
+                backgroundColor: ["#ff6b6b", "#4ecdc4", "#ffe66d"]
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+
+});
+</script>
+
+</body>
+</html>
