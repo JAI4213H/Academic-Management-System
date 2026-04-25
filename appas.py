@@ -4,7 +4,7 @@ app = Flask(__name__)
 app.secret_key = "supersecret124r152"
 
 
-
+to_cong = []
 
 teachers = {
     "teacher1": "pass123",
@@ -46,41 +46,39 @@ def home():
     return render_template("home.html")
 
 @app.route("/login/teacher", methods = ["POST", "GET"])
+@app.route("/login/teacher", methods=["POST", "GET"])
 def teacherlogin():
-    
+
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
-        
+
         if username in teachers and password == teachers[username]:
             session["user"] = username
-            return redirect(url_for("dash"))
-        else:
-            return render_template("teacher_login.html", error="Invalid credentials")
-    else:
-        return render_template("teacher_login.html")
+            return redirect(url_for("teacherdash"))
+
+        return render_template("teacher_login.html", error="Invalid credentials")
+
+    return render_template("teacher_login.html")
         
         
     
     
     
-@app.route("/login/student", methods = ["POST", "GET"])
+@app.route("/login/student", methods=["POST", "GET"])
 def studentlog():
-        
+
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
-        
+
         if username in students_password and password == students_password[username]:
             session["user"] = username
             return redirect(url_for("studentdash"))
-        
-        else:
-            return render_template("teacher_login.html", error="Invalid credentials")
-    else:
-        
-        return render_template("student_login.html")
-    
+
+        return render_template("student_login.html", error="Invalid credentials")
+
+    return render_template("student_login.html")
     
 @app.route("/studentdash")
 def studentdash():
@@ -88,8 +86,32 @@ def studentdash():
     maths = students_marks[name]['maths']
     science = students_marks[name]['science']
     english = students_marks[name]['english']
-    return render_template("stuDashboard.html", name = name,maths = maths,science = science,english = english)
+    message = None
+    
+    if name in to_cong:
+        message = "🎉 Congrats! Teacher selected you!"
+        
+        
+    return render_template("stuDashboard.html", name = name,maths = maths,science = science,english = english, message = message)
 
+
+@app.route("/teacherdash", methods=["GET", "POST"])
+def teacherdash():
+    name = session["user"]
+    total = len(students_marks)
+
+    if request.method == "POST":
+        student_name = request.form.get("student_name")
+        to_cong.append(student_name)
+        return redirect(url_for("teacherdash"))
+
+    return render_template(
+        "teacher_dashboard.html",
+        teacher=name,
+        total=total,
+        students=students_marks
+    )
+    
 
 
 
