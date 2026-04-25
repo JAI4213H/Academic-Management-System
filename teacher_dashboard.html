@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Teacher Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins'; }
+
+body {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+}
+
+/* HEADER */
+.header {
+    padding: 30px;
+    text-align: center;
+}
+
+/* CARDS */
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.card {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 15px;
+    width: 200px;
+    text-align: center;
+}
+
+/* TABLE */
+.table-box {
+    width: 80%;
+    margin: 40px auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+}
+
+tr {
+    background: rgba(255,255,255,0.1);
+}
+
+tr:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* BUTTON */
+button {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 8px;
+    background: #00c6ff;
+    color: white;
+    cursor: pointer;
+}
+
+/* SIDEBAR ICON */
+.icon {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    color: black;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* SIDEBAR */
+.sidebar {
+    position: fixed;
+    right: -250px;
+    top: 0;
+    width: 250px;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    transition: 0.3s;
+    padding: 20px;
+}
+
+.sidebar.active {
+    right: 0;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ICON -->
+<div class="icon" onclick="toggleMenu()">☰</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="menu">
+    <h3>Students</h3>
+
+    {% for student in students %}
+    <form action="/teacherdash" method="POST">
+        <input type="hidden" name="student_name" value="{{ student }}">
+        <button type="submit">{{ student }}</button>
+    </form>
+    {% endfor %}
+</div>
+
+<!-- HEADER -->
+<div class="header">
+    <h1>👔 Hello {{ teacher }}</h1>
+</div>
+
+<!-- CARDS -->
+<div class="cards">
+    <div class="card">
+        <h3>Total Students</h3>
+        <h1>{{ total }}</h1>
+    </div>
+</div>
+
+<!-- TABLE -->
+<div class="table-box">
+<table>
+<tr>
+    <th>Name</th>
+    <th>Maths</th>
+    <th>Science</th>
+    <th>English</th>
+    <th>Action</th>
+</tr>
+
+{% for name, marks in students.items() %}
+<tr>
+    <td>{{ name }}</td>
+    <td>{{ marks.maths }}</td>
+    <td>{{ marks.science }}</td>
+    <td>{{ marks.english }}</td>
+
+    <td>
+        <form action="/teacherdash" method="POST">
+            <input type="hidden" name="student_name" value="{{ name }}">
+            <button type="submit">🎉</button>
+        </form>
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+</div>
+
+<script>
+function toggleMenu() {
+    document.getElementById("menu").classList.toggle("active");
+}
+</script>
+
+</body>
+</html>
